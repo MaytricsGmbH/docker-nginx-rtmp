@@ -130,6 +130,9 @@ LABEL MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
 ENV HTTP_PORT 80
 ENV HTTPS_PORT 443
 ENV RTMP_PORT 1935
+ENV STREAM_AUTH_HOST http://127.0.0.1:9980
+ENV RTMP_TRANSCODE_IP 127.0.0.1
+ENV RTMP_HLS_IP 127.0.0.1
 
 RUN apk add --update \
   ca-certificates \
@@ -157,7 +160,7 @@ COPY --from=build-ffmpeg /usr/lib/libfdk-aac.so.2 /usr/lib/libfdk-aac.so.2
 # Add NGINX path, config and static files.
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
 ADD nginx.conf /etc/nginx/nginx.conf.template
-RUN mkdir -p /opt/data && mkdir /www
+RUN mkdir -p /opt/data && mkdir /www && mkdir -p /opt/conf.d
 ADD static /www/static
 
 EXPOSE 1935
