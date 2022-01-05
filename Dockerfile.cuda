@@ -165,11 +165,11 @@ COPY --from=build-ffmpeg /usr/lib/x86_64-linux-gnu/libfdk-aac.so.1 /usr/lib/x86_
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
 RUN mkdir -p /opt/data && mkdir /www
 ADD nginx-cuda.conf /etc/nginx/nginx.conf.template
-ADD entrypoint.cuda.sh /opt/entrypoint.sh
-RUN chmod gu+x /opt/entrypoint.sh
+ADD entrypoint.cuda.sh /opt/entrypoint.cuda.sh
+RUN chmod gu+x /opt/entrypoint.cuda.sh
 ADD static /www/static
 
 EXPOSE 1935
 EXPOSE 80
 
-CMD /opt/entrypoint.sh
+CMD /opt/entrypoint.cuda.sh

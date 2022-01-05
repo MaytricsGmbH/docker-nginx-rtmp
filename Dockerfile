@@ -150,7 +150,8 @@ RUN apk add --update \
   opus \
   rtmpdump \
   x264-dev \
-  x265-dev
+  x265-dev \
+  bash
 
 COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
 COPY --from=build-nginx /etc/nginx /etc/nginx
@@ -159,13 +160,13 @@ COPY --from=build-ffmpeg /usr/lib/libfdk-aac.so.2 /usr/lib/libfdk-aac.so.2
 
 # Add NGINX path, config and static files.
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
-ADD nginx.conf /etc/nginx/nginx.conf.template
 RUN mkdir -p /opt/data && mkdir /www && mkdir -p /opt/conf.d
+ADD nginx.conf /etc/nginx/nginx.conf.template
+ADD entrypoint.sh /opt/entrypoint.sh
+RUN chmod gu+x /opt/entrypoint.sh
 ADD static /www/static
 
 EXPOSE 1935
 EXPOSE 80
 
-CMD envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \
-  /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && \
-  nginx
+CMD /opt/entrypoint.sh
